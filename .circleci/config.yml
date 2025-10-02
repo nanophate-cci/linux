@@ -1,0 +1,34 @@
+version: 2.1
+
+jobs:
+  test-blobless-checkout:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout:
+          method: blobless
+      - run:
+          name: Verify checkout
+          command: |
+            echo "Repository checked out successfully"
+            ls -la
+            git log --oneline -n 5
+      
+
+  compare-traditional-checkout:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: Verify traditional checkout
+          command: |
+            echo "Traditional checkout completed"
+            ls -la
+            git log --oneline -n 5
+
+workflows:
+  test-checkout-methods:
+    jobs:
+      - test-blobless-checkout
+      - compare-traditional-checkout
