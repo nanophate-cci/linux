@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  git-shallow-clone: guitarrapc/git-shallow-clone@2.8.0
+
 jobs:
   test-blobless-checkout:
     docker:
@@ -27,8 +30,21 @@ jobs:
             ls -la
             git log --oneline -n 5
 
+  compare-shallow-checkout:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - git-shallow-clone/checkout
+      - run:
+          name: Verify traditional checkout
+          command: |
+            echo "Traditional checkout completed"
+            ls -la
+            git log --oneline -n 5
+
 workflows:
   test-checkout-methods:
     jobs:
       - test-blobless-checkout
       - compare-traditional-checkout
+      - compare-shallow-checkout
